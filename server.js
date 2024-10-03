@@ -17,7 +17,8 @@ app.use(express.urlencoded({extended: false}))
 //logger middleware
 app.use(logger)
 
-// app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public')))
+
 app.use('/api/posts', posts)
 
 //catch all

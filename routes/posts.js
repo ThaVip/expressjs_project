@@ -2,14 +2,13 @@ const express = require('express')
 const router = express.Router()
 
 let posts = [
-    {id: 1, tittle: 'post one'},
-    {id: 2, tittle: 'post two'},
-    {id: 3, tittle: 'post three'}
+    {id: 1, title: 'post one'},
+    {id: 2, title: 'post two'},
+    {id: 3, title: 'post three'}
 ]
 
-
 //get all post
-router.get('/', (req,res)=>{
+router.get('/', (req,res, next)=>{
     const limit = parseInt(req.query.limit);
     if (!isNaN(limit) && limit > 0){
         return res.status(200).json(posts.slice(0 , limit))
@@ -18,54 +17,56 @@ router.get('/', (req,res)=>{
 })
 
 //get a single post
-router.get('/:id', (req, res)=>{
+router.get('/:id', (req, res, next)=>{
     const id = parseInt(req.params.id)
     const post = posts.find((post)=> post.id === id)
-    console.log(post)
     if (!post){
-    return res
-        .status(404)
-        .json(`A post with the id of ${id} was not found`)    
+        const error = new Error(`the id for user ${id} is not found`)
+        error.status = 404
+        return next(error)
     } 
     res.status(200).json(post)
 })
 
 //create newPost
-router.post('/', (req, res)=>{
+router.post('/', (req, res, next)=>{
     const newPost ={
-        id : posts.lenght + 1,
-        tittle : req.body.tittle
+        id : posts.length + 1,
+        title : req.body.title
     }
-    if (!posts.tittle){
-        return res.status(400).json({msg:'tittle not found'})
+    if (!posts.title){
+        const error = new Error(`please include a new title`)
+        error.status=404
+        return next(error)
     }
     posts.push(newPost)
     res.status(201).json(posts)
 })
 
 //update posts
-router.put('/:id', (req, res)=>{
-    const id = parseInt(req.params)
+router.put('/:id', (req, res, next)=>{
+    const id = parseInt(req.params.id)
     const post = posts.find((post)=> post.id === id)
     
     if(!post){
-        return res
-        .status(404)
-        .json(`the post with the id ${id} was not found`)
+        const error = new Error(`the id for user ${id} is not found`)
+        error.status = 404
+        return next(error)
     }
-    post.tittle = req.body.tittle
+    post.title = req.body.title
     res.json(posts);
 })
 
-router.delete('/:id', (req, res)=>{
-    id = parseInt(req.params)
+//delete
+router.delete('/:id', (req, res,next)=>{
+    id = parseInt(req.params.id)
     post = posts.find((post)=> post.id === id)
     if(!post){
-        return res
-        .status(404)
-        .json(`there is no post with this ${id} id`)
+        const error = new Error(`the id for user ${id} is not found`)
+        error.status = 404
+        return next(error)
     }
-    posts = posts.filter((post)=> post !==post.id)
+    posts = posts.filter((post)=> post.id !==id)
     res.json(posts);
 })
 

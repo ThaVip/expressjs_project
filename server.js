@@ -3,13 +3,7 @@ const path = require('path')
 
 const app = express();
 
-app.get('/', (req, res) =>{
-    res.sendFile(path.join(__dirname, 'public', 'home.html'))
-})
-
-app.get('/about', (req, res)=> {
-    res.sendFile(path.join(__dirname, 'public', 'about.html'))
-})
+app.use(express.static(path.join(__dirname, 'public')))
 
 app.listen(8000 , ()=> {
     console.log('server is up and runing')

@@ -30,4 +30,43 @@ router.get('/:id', (req, res)=>{
     res.status(200).json(post)
 })
 
+//create newPost
+router.post('/', (req, res)=>{
+    const newPost ={
+        id : posts.lenght + 1,
+        tittle : req.body.tittle
+    }
+    if (!posts.tittle){
+        return res.status(400).json({msg:'tittle not found'})
+    }
+    posts.push(newPost)
+    res.status(201).json(posts)
+})
+
+//update posts
+router.put('/:id', (req, res)=>{
+    const id = parseInt(req.params)
+    const post = posts.find((post)=> post.id === id)
+    
+    if(!post){
+        return res
+        .status(404)
+        .json(`the post with the id ${id} was not found`)
+    }
+    post.tittle = req.body.tittle
+    res.json(posts);
+})
+
+router.delete('/:id', (req, res)=>{
+    id = parseInt(req.params)
+    post = posts.find((post)=> post.id === id)
+    if(!post){
+        return res
+        .status(404)
+        .json(`there is no post with this ${id} id`)
+    }
+    posts = posts.filter((post)=> post !==post.id)
+    res.json(posts);
+})
+
 module.exports = router;
